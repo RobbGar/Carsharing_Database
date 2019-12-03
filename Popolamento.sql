@@ -168,3 +168,10 @@ INSERT INTO conducenti (codf, estremidoc, estremipat, catpat, utente, azienda, i
 INSERT INTO conducenti (codf, estremidoc, estremipat, catpat, utente, azienda, indirizzo, datasdoc, datardoc) VALUES ('PNCADT22E49B212R', 'DD32342TG', 'GE3231124K', 'B ', 3, null, 'Piazza Ta, 5', '2029-05-11', '2019-05-11');
 INSERT INTO conducenti (codf, estremidoc, estremipat, catpat, utente, azienda, indirizzo, datasdoc, datardoc) VALUES ('TSCMMA11B79B344M', 'MN32892DD', 'GE3119498K', 'B ', 3, null, 'Piazza Ta, 5', '2028-07-20', '2018-07-20');
 INSERT INTO conducenti (codf, estremidoc, estremipat, catpat, utente, azienda, indirizzo, datasdoc, datardoc) VALUES ('TRVGNZ23A78B233R', 'JI72847WQ', 'GE3291847K', 'B ', null, 7, 'Via del Canneto, 77', '2022-01-01', '2012-01-01');
+
+
+--Prenotazioni
+
+
+insert into prenotazioni values (1, 3, '2020-02-06 08:00:00','2020-02-09 08:00:00',0,null, null, null, 'AB123AB', '2019-10-08 00:00:00',null, null, 'CC', null)
+insert into prenotazioni values (2, 7, '2019-12-06 08:00:00','2020-12-12 08:00:00',140,null, null, null, 'PP123PP', '2019-12-06 07:40:00',null, null, 'CC', null)

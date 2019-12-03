@@ -252,7 +252,7 @@ create table prenotazioni
 	codp serial not null
 		constraint prenotazioni_pkey
 			primary key,
-	utente integer
+	codu integer
 		constraint prenotazioni_utente_fkey
 			references utente
 				on update cascade on delete no action,

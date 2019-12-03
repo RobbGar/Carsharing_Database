@@ -26,8 +26,8 @@ ALTER TABLE prenotazioni ADD CONSTRAINT abbonamentovalido CHECK (1 = valabb(uten
 --3 La data di ritiro della vettura deve essere successiva o contemporanea alla data di inizio dell'abbonamento.
 
 CREATE OR REPLACE FUNCTION dopo_abbonamento() RETURNS trigger AS $dopo_abbonamento$ BEGIN
-IF ((SELECT datai FROM storicoabbonamenti WHERE codu = NEW.utente AND dataf is null)-DATE(NEW.dataoraritiro))  >0
-THEN RAISE EXCEPTION '%Il ritiro deve essere successivo alla data di inizo abbonamento ', NEW.utente;
+IF ((SELECT datai FROM storicoabbonamenti WHERE codu = NEW.codu AND dataf is null)-DATE(NEW.dataoraritiro))  >0
+THEN RAISE EXCEPTION '%Il ritiro deve essere successivo alla data di inizo abbonamento ', NEW.codu;
 ELSE RETURN NEW;
 END IF; END; $dopo_abbonamento$ LANGUAGE plpgsql;
 
@@ -36,7 +36,7 @@ CREATE TRIGGER ritiro_abbonamento BEFORE INSERT OR UPDATE ON Prenotazioni FOR EA
 
 --4 L'ora di ritiro della vettura deve essere di almeno 15 minuti successiva all'ora dell'inserimento della prenotazione.
 
-ALTER TABLE Prenotazioni ADD CONSTRAINT almeno15min CHECK(EXTRACT(minute FROM dataoraritiro - oraprenotazione) >= 15);
+ALTER TABLE Prenotazioni ADD CONSTRAINT almeno15min check ((dataoraritiro - oraprenotazione) >=  make_interval(mins := 15));
 
 -- 5 Il conducente addizionale associato a privato deve avere lo stesso indirizzo di residenza del privato a cui sono associati.;
 
@@ -190,9 +190,10 @@ RETURNS trigger
 AS $number28$
 BEGIN
 
-	UPDATE Prenotazioni SET Pagamento=Pagamento/1.25
-	WHERE Utente=NEW.Utente AND NEW.Utente IN (SELECT CodU FROM Utente JOIN Privato ON Privato.CodU=Utente.CodU WHERE (CURRENT_DATE-DataN)<INTERVAL'26' YEAR);
+		UPDATE Prenotazioni SET prezzo=prezzo/1.25
+	WHERE prenotazioni.codu=NEW.codu AND NEW.codu IN (SELECT CodU FROM Utente Natural JOIN Privato  WHERE make_interval(years := (CURRENT_DATE-DataN))< INTERVAL'26' YEAR);
 	RETURN NEW;
+
 
 END;
 $number28$ LANGUAGE plpgsql;
