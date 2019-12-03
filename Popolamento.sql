@@ -1,42 +1,42 @@
 --Popolamento Carte di credito
-insert into cc values (default, '4023345666755643', '01-01-2020', 'Paolo Rossi', 'VISA');
-insert into cc values (default, '4023345222355643', '01-05-2019', 'Mario Rossi', 'VISA');
-insert into cc values (default, '4023345456755643', '01-07-2021', 'Marco Maschio', 'VISA');
-insert into cc values (default, '4023345786555643', '01-11-2022', 'Roberto Garbarino', 'MASTERCARD');
-insert into cc values (default, '4023236748955643', '01-12-2020', 'Francesco De Gregori', 'MASTERCARD');
-insert into cc values (default, '4021922649207463', '01-09-2024', 'Adriano Celentano', 'VISA');
-insert into cc values (default, '4023345661231253', '01-01-2023', 'Fio Germi', 'VISA');
-insert into cc values (default, '4023345666799763', '01-09-2022', 'Gerry Scotti', 'MASTERCARD');
-insert into cc values (default, '4015628105666753', '01-04-2021', 'Giacomo Cangioloni', 'VISA');
-insert into cc values (default, '4023124780597343', '01-06-2025', 'Maria Giordano', 'VISA');
+insert into cc values (1, '4023345666755643', '01-01-2020', 'Paolo Rossi', 'VISA');
+insert into cc values (2, '4023345222355643', '01-05-2019', 'Mario Rossi', 'VISA');
+insert into cc values (3, '4023345456755643', '01-07-2021', 'Marco Maschio', 'VISA');
+insert into cc values (4, '4023345786555643', '01-11-2022', 'Roberto Garbarino', 'MASTERCARD');
+insert into cc values (5, '4023236748955643', '01-12-2020', 'Francesco De Gregori', 'MASTERCARD');
+insert into cc values (6, '4021922649207463', '01-09-2024', 'Adriano Celentano', 'VISA');
+insert into cc values (7, '4023345661231253', '01-01-2023', 'Fio Germi', 'VISA');
+insert into cc values (8, '4023345666799763', '01-09-2022', 'Gerry Scotti', 'MASTERCARD');
+insert into cc values (9, '4015628105666753', '01-04-2021', 'Giacomo Cangioloni', 'VISA');
+insert into cc values (10, '4023124780597343', '01-06-2025', 'Maria Giordano', 'VISA');
 
 --RID
 
-insert into RID values (default, 'Giacomo Cangioloni', 'IT92D0300203280753829196629');
-insert into RID values (default, 'Paolo Rossi', 'IT76P0300203280488455885995');
-insert into RID values (default, 'Maria Giordano', 'IT45V0300203280954185284694');
-insert into RID values (default, 'Ezio Greggio', 'MC7630003000709831872185S71');
-insert into RID values (default, 'Cristiano Olivari', 'BR5026717536862473534325F4');
-insert into RID values (default, 'Marco Marcio', 'IT49C0300203280541486218456');
-insert into RID values (default, 'Lorenzo Svanosio', 'IT98N0300203280189578483639');
-insert into RID values (default, 'Sara Nuvoli', 'IT33P0300203280621194373642');
-insert into RID values (default, 'Francesco Giuseppe', 'CI16M268544311748144872');
-insert into RID values (default, 'Gerry Scotti', 'LU060103898248445173');
+insert into RID values (1, 'Giacomo Cangioloni', 'IT92D0300203280753829196629');
+insert into RID values (2, 'Paolo Rossi', 'IT76P0300203280488455885995');
+insert into RID values (3, 'Maria Giordano', 'IT45V0300203280954185284694');
+insert into RID values (4, 'Ezio Greggio', 'MC7630003000709831872185S71');
+insert into RID values (5, 'Cristiano Olivari', 'BR5026717536862473534325F4');
+insert into RID values (6, 'Marco Marcio', 'IT49C0300203280541486218456');
+insert into RID values (7, 'Lorenzo Svanosio', 'IT98N0300203280189578483639');
+insert into RID values (8, 'Sara Nuvoli', 'IT33P0300203280621194373642');
+insert into RID values (9, 'Francesco Giuseppe', 'CI16M268544311748144872');
+insert into RID values (10, 'Gerry Scotti', 'LU060103898248445173');
 
 
 --modalita pagamento
-insert into modalitapagamento values (default, 70, 2, 1);
-insert into modalitapagamento values (default, 65, NUll, NULL);
-insert into modalitapagamento values (default, NULL, 7, NULL);
-insert into modalitapagamento values (default, 40, NUll, 3);
-insert into modalitapagamento values (default, NULL, 1, 2);
-insert into modalitapagamento values (default, 65, 8, 4);
-insert into modalitapagamento values (default, 12, 5, NULL);
-insert into modalitapagamento values (default, 55, NULL, 1);
-insert into modalitapagamento values (default, 70, 6, 5);
-insert into modalitapagamento values (default, NULL, NUll, 10);
-insert into modalitapagamento values (default, NULL, NULL, 9);
-insert into modalitapagamento values (default, 33, 4, 8);
+insert into modalitapagamento values (1, 70, 2, 1);
+insert into modalitapagamento values (2, 65, NUll, NULL);
+insert into modalitapagamento values (3, NULL, 7, NULL);
+insert into modalitapagamento values (4, 40, NUll, 3);
+insert into modalitapagamento values (5, NULL, 1, 2);
+insert into modalitapagamento values (6, 65, 8, 4);
+insert into modalitapagamento values (7, 12, 5, NULL);
+insert into modalitapagamento values (8, 55, NULL, 1);
+insert into modalitapagamento values (9, 70, 6, 5);
+insert into modalitapagamento values (10, NULL, NUll, 10);
+insert into modalitapagamento values (11, NULL, NULL, 9);
+insert into modalitapagamento values (12, 33, 4, 8);
 --Utenti
 
 INSERT INTO utente (codu, codmp) VALUES (1, 1);
@@ -64,12 +64,12 @@ INSERT INTO privato (codu, codf, email, nome, cognome, datan, luogon, genere, pr
 INSERT INTO privato (codu, codf, email, nome, cognome, datan, luogon, genere, professione, indirizzo, bonus) VALUES (6, 'RXXKSM96E24E463J', 'erikasamoto@gmail.com', 'Eri', 'Kasamoto', '1989-01-01', 'Tokyo', 'F', 'soldato', 'Via Del Parco, 12 ', false);
 --Legali
 
-insert into legali values (default, 'Davide', 'Marcone', '01-01-1996', 'Camogli');
-insert into legali values (default, 'Gianmaria', 'Sasso', '01-02-1990', 'Recco');
-insert into legali values (default, 'Cristiano', 'Olivari', '24-05-1996', 'La Spezia');
-insert into legali values (default, 'Rachele', 'Faretra', '01-10-1995', 'Lavagna');
-insert into legali values (default, 'Jacob', 'Cangiolini', '23-07-1990', 'Alessandria (EG)');
-insert into legali values (default, 'Paolo', 'Arcone', '05-04-1981', 'Salsomaggiore');
+insert into legali values (1, 'Davide', 'Marcone', '01-01-1996', 'Camogli');
+insert into legali values (2, 'Gianmaria', 'Sasso', '01-02-1990', 'Recco');
+insert into legali values (3, 'Cristiano', 'Olivari', '24-05-1996', 'La Spezia');
+insert into legali values (4, 'Rachele', 'Faretra', '01-10-1995', 'Lavagna');
+insert into legali values (5, 'Jacob', 'Cangiolini', '23-07-1990', 'Alessandria (EG)');
+insert into legali values (6, 'Paolo', 'Arcone', '05-04-1981', 'Salsomaggiore');
 
 -- Aziende
 
@@ -82,11 +82,11 @@ insert into aziende values(12, 03391860135, 'hem@hem.com', 0185289900, 'H&M', 'V
 
 --Abbonamenti
 
-insert into abbonamenti values (default, INTERVAL '7 days', 15);
-insert into abbonamenti values (default, INTERVAL '30 days', 45);
-insert into abbonamenti values (default, INTERVAL '14 days', 26);
-insert into abbonamenti values (default, INTERVAL '60 days', 80);
-insert into abbonamenti values (default, INTERVAL '180 days', 220);
+insert into abbonamenti values (1, INTERVAL '7 days', 15);
+insert into abbonamenti values (2, INTERVAL '30 days', 45);
+insert into abbonamenti values (3, INTERVAL '14 days', 26);
+insert into abbonamenti values (4, INTERVAL '60 days', 80);
+insert into abbonamenti values (5, INTERVAL '180 days', 220);
 
 --Storico Abbonamenti
 
@@ -136,37 +136,28 @@ INSERT INTO parcheggi (codp, lat, long, nome, indirizzo, zona, numposti) VALUES 
 INSERT INTO parcheggi (codp, lat, long, nome, indirizzo, zona, numposti) VALUES (2, '52352', '11234', 'Vittoria', 'Piazza della vittoria', 'Foce', 30);
 INSERT INTO parcheggi (codp, lat, long, nome, indirizzo, zona, numposti) VALUES (3, '33213', '123421', 'casa', 'via del carreto ', 'rapallo', 2);
 
---Categoria
-
-INSERT INTO categoria (nomecategoria) VALUES ('City Car');
-INSERT INTO categoria (nomecategoria) VALUES ('Comfort');
-INSERT INTO categoria (nomecategoria) VALUES ('Elettrico');
-INSERT INTO categoria (nomecategoria) VALUES ('Media');
-INSERT INTO categoria (nomecategoria) VALUES ('Cargo');
 
 --Ammette
 
 INSERT INTO ammette (codp, nomecategoria) VALUES (1, 'City Car');
 INSERT INTO ammette (codp, nomecategoria) VALUES (1, 'Cargo');
-INSERT INTO ammette (codp, nomecategoria) VALUES (1, 'Comfort');
+INSERT INTO ammette (codp, nomecategoria) VALUES (1, 'Elettrico');
 INSERT INTO ammette (codp, nomecategoria) VALUES (1, 'Media');
-INSERT INTO ammette (codp, nomecategoria) VALUES (2, 'City Car');
+INSERT INTO ammette (codp, nomecategoria) VALUES (2, 'Media');
 INSERT INTO ammette (codp, nomecategoria) VALUES (2, 'Cargo');
 INSERT INTO ammette (codp, nomecategoria) VALUES (2, 'Elettrico');
 INSERT INTO ammette (codp, nomecategoria) VALUES (3, 'Comfort');
 INSERT INTO ammette (codp, nomecategoria) VALUES (3, 'Media');
 INSERT INTO ammette (codp, nomecategoria) VALUES (3, 'City Car');
-
 --Veicoli
 
 INSERT INTO veicoli VALUES ('AB123AB', 'Violetta', 12000.00, 'Blu', 1234, 1, false, 1, 1);
-INSERT INTO veicoli VALUES ('PP123PP', 'Bluette', 16000.00, 'Verde', 1234, 1, true, 2, 1);
+INSERT INTO veicoli VALUES ('PP123PP', 'Bluette', 16000.00, 'Verde', 1234, 1, true, 1, 3);
 INSERT INTO veicoli VALUES ('VV123VV', 'Azzurra', 21000.00, 'Grigia', 1234, 2, true, 3, 1);
 INSERT INTO veicoli VALUES ('PP234PP', 'Bionda', 22000.00, 'Nera', 1234, 1, false, 4, 2);
-INSERT INTO veicoli VALUES ('QQ123PP', 'Mazzi', 99000.00, 'Rossa', 1234, null, false, 5, 2);
-INSERT INTO veicoli VALUES ('FF668FF', 'Maria', 23000.00, 'Blu', 1234, null, true, 6, 2);
-INSERT INTO veicoli VALUES ('FS668SS', 'Giova', 29000.00, 'Blu', 1234, null, true, 2, 1);
-INSERT INTO veicoli VALUES ('FT121GB', 'Paol', 89000.00, 'Nera', 1234, null, true, 2, 1);
+INSERT INTO veicoli VALUES ('QQ123PP', 'Mazzi', 99000.00, 'Rossa', 1234, null, false, 4, 2);
+INSERT INTO veicoli VALUES ('FS668SS', 'Giova', 29000.00, 'Blu', 1234, null, true, 2, 3);
+INSERT INTO veicoli VALUES ('FT121GB', 'Paol', 89000.00, 'Nera', 1234, null, true, 4, 1);
 
 --Conducenti
 

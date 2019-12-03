@@ -36,7 +36,7 @@ CREATE TRIGGER ritiro_abbonamento BEFORE INSERT OR UPDATE ON Prenotazioni FOR EA
 
 --4 L'ora di ritiro della vettura deve essere di almeno 15 minuti successiva all'ora dell'inserimento della prenotazione.
 
-ALTER TABLE Prenotazioni ADD CONSTRAINT almeno15min CHECK(EXTRACT(minute FROM dataoraritiro - oraprenotazione) >= 15)
+ALTER TABLE Prenotazioni ADD CONSTRAINT almeno15min CHECK(EXTRACT(minute FROM dataoraritiro - oraprenotazione) >= 15);
 
 -- 5 Il conducente addizionale associato a privato deve avere lo stesso indirizzo di residenza del privato a cui sono associati.;
 
@@ -54,7 +54,7 @@ CREATE TRIGGER controllo_indirizzo BEFORE INSERT OR UPDATE ON Conducenti FOR EAC
 
 --7 Se si sceglie come modalità di pagamento il pre-pagamento, l'ammontare deve essere strettamente maggiore di 0 e il residuo coerente con quanto speso per abbonamenti e  prenotazioni.
 
-ALTER TABLE modalitapagamento ADD CONSTRAINT Controllo_prepagamento CHECK (prepag>0 OR prepag IS NULL)
+ALTER TABLE modalitapagamento ADD CONSTRAINT Controllo_prepagamento CHECK (prepag>0 OR prepag IS NULL);
 
 --8 Utenti diversi possono usare la stessa modalità di pagamento solo se essa non è di tipo pre-pagamento/contanti.
 --Per costruzione della tabella
@@ -63,24 +63,15 @@ ALTER TABLE modalitapagamento ADD CONSTRAINT Controllo_prepagamento CHECK (prepa
 --9 Una carta di credito può essere utilizzata per un pagamento solo entro la data di scadenza (la data di scadenza deve essere successiva alla data di acquisto dell'abbonamento e alla data di riconsegna di ogni prenotazione).
 
 
-
-CREATE OR REPLACE FUNCTION controllo_carta_abbonamento() RETURNS trigger AS $controllo_carta_abbonamento$ BEGIN
-IF (SELECT datas FROM CC INNER JOIN modalitapagamento on codCC = CC WHERE codu = new.codu AND new.tipopagamento = 'CC')>new.datapagamento
+CREATE OR REPLACE FUNCTION controllo_carta() RETURNS trigger AS $controllo_carta$ BEGIN
+IF ((SELECT datas FROM CC INNER JOIN modalitapagamento on codCC = CC INNER JOIN utente on codu=new.codu and utente.codmp = modalitapagamento.codmp WHERE new.tipopagamento= 'CC')<new.datapagamento)
 THEN RAISE EXCEPTION '%carta scaduta', NEW.codu;
 ELSE RETURN NEW;
-END IF; END; $controllo_carta_abbonamento$ LANGUAGE plpgsql;
+END IF; END; $controllo_carta$ LANGUAGE plpgsql;
 
-CREATE TRIGGER controllo_carta_abbonamento BEFORE INSERT OR UPDATE ON storicoabbonamenti FOR EACH ROW EXECUTE PROCEDURE controllo_carta_abbonamento();
+CREATE TRIGGER controllo_carta_abbonamento BEFORE INSERT OR UPDATE ON storicoabbonamenti FOR EACH ROW EXECUTE PROCEDURE controllo_carta();
 
-CREATE OR REPLACE FUNCTION controllo_carta_prenotazione() RETURNS trigger AS $controllo_carta_prenotazione$ BEGIN
-
-IF (SELECT datas FROM CC INNER JOIN modalitapagamento on codCC = CC NATURAL JOIN utente WHERE codu = NEW.codu AND new.tipopagamento = 'CC')< new.datapagamento
-THEN RAISE EXCEPTION '%carta scaduta', NEW.codu;
-ELSE RETURN NEW;
-END IF; END; $controllo_carta_prenotazione$ LANGUAGE plpgsql;
-
-CREATE TRIGGER controllo_carta_prenotazione BEFORE INSERT OR UPDATE ON prenotazioni FOR EACH ROW EXECUTE PROCEDURE controllo_carta_prenotazione();
-
+CREATE TRIGGER controllo_carta_prenotazione BEFORE INSERT OR UPDATE ON prenotazioni FOR EACH ROW EXECUTE PROCEDURE controllo_carta();
 --10 Il numero di vetture presenti in un parcheggio non deve mai eccedere il numero posti dello stesso.
 
 CREATE OR REPLACE FUNCTION controllo_numerovetture() RETURNS trigger AS $controllo_numerovetture$ BEGIN
@@ -180,7 +171,7 @@ RETURNS TRIGGER
 SECURITY DEFINER
 AS $calcolo_prezzo_t$
 BEGIN 
-	NEW.prezzo=calcolo_prezzo(NEW.codp, NEW.utente, NEW.kmritiro,NEW.kmriconsegna,NEW.oraeffettivaritiro,NEW.oraeffettivaric, NEW.veicolo); --chiamo un'altra funzione per il calcolo del prezzo
+	NEW.prezzo=calcolo_prezzo(NEW.codp, NEW.codu, NEW.kmritiro,NEW.kmriconsegna,NEW.oraeffettivaritiro,NEW.oraeffettivaric, NEW.veicolo); --chiamo un'altra funzione per il calcolo del prezzo
 RETURN NEW;
 END;
 $calcolo_prezzo_t$ LANGUAGE plpgsql;

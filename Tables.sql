@@ -1,4 +1,3 @@
-set search_path to 'ultimate';
 
 create table cc
 (
@@ -22,7 +21,8 @@ create table modalitapagamento
 	CodMP serial primary key,
 	prepag numeric(6,2),
 	cc integer references cc on update cascade on delete no action,
-	rid integer references rid on update cascade on delete no action
+	rid integer references rid on update cascade on delete no action,
+    Check (prepag is not null or cc is not null or rid is not null)
 );
 
 create table utente
@@ -134,7 +134,7 @@ create table conducenti
 	indirizzo varchar(40) not null,
 	datasdoc date,
 	datardoc date,
-	CHECK (utente is null and azienda is not null) or (utente is not null and azienda is null)),
+	CHECK ((utente is null and azienda is not null) or (utente is not null and azienda is null)),
 	CHECK (datasdoc>datardoc)
 );
 
@@ -164,7 +164,7 @@ create table storicoabbonamenti
 		constraint storicoabbonamenti_coda_fkey
 			references abbonamenti
 				on update cascade on delete no action,
-	datapagamentoabb date,
+	datapagamento date,
 	tipopagamento varchar(7) not null CHECK (tipopagamento='CC' OR tipopagamento='RID' OR tipopagamento = 'PREPAG'),
 	constraint storicoabbonamenti_pkey
 		primary key (codu, datai)
@@ -190,7 +190,8 @@ create table modelli
 	altezza numeric(3) not null,
 	lunghezza numeric(3) not null,
 	larghezza numeric(3) not null,
-	bagagliaio numeric(4) not null
+	bagagliaio numeric(4) not null,
+	cat varchar(9) not null check (cat = 'City Car' OR cat = 'Elettrico' or cat = 'Media' OR cat = 'Cargo' OR cat = 'Comfort')
 );
 
 
@@ -219,7 +220,6 @@ create table parcheggi
 	indirizzo varchar(30) not null,
 	zona varchar(20) not null,
 	numposti numeric(4) not null,
-	cat varchar(9) not null CHECK (cat = 'City Car' OR  cat = 'Media' or cat = 'Comfort' or cat = 'Cargo' or cat = 'Elettrico'),
 	constraint latlong
 		unique (lat, long)
 );
@@ -269,9 +269,10 @@ create table prenotazioni
 	oraprenotazione timestamp not null,
 	dataoraannullamento timestamp,
 	datapagamento timestamp,
-	pagamento integer,
-	tipopagamento varchar(7) Not null CHECK (tipopagamento='CC' OR tipopagamento='RID' OR tipopagamento = 'PREPAG')
+	tipopagamento varchar(7) Not null CHECK (tipopagamento='CC' OR tipopagamento='RID' OR tipopagamento = 'PREPAG'),
+	prezzo numeric(8,2)
 );
+
 
 create table rifornimenti
 (
@@ -288,12 +289,7 @@ create table rifornimenti
 );
 
 
-create table categoria
-(
-	nomecategoria varchar(20) not null
-		constraint categoria_pkey
-			primary key
-);
+
 
 
 create table ammette
@@ -302,11 +298,9 @@ create table ammette
 		constraint ammette_codp_fkey
 			references parcheggi
 				on update cascade on delete no action,
-	nomecategoria varchar(20)
-		constraint ammette_nomecategoria_fkey
-			references categoria
-				on update cascade on delete no action,
-	primary key (codp, nomecategoria)
+	nomecategoria varchar(20),
+	primary key (codp, nomecategoria),
+	check (nomecategoria = 'City Car' OR nomecategoria = 'Elettrico' or nomecategoria = 'Media' OR nomecategoria = 'Cargo' OR nomecategoria = 'Comfort')
 );
 
 
@@ -345,5 +339,3 @@ create table coinvolge
 	constraint coinvolge_pkey
 		primary key (codf, conducente, dataoraincidente)
 );
-
-alter table modalitapagamento add constraint atleastone Check (prepag is not null or cc is not null or rid is not null);
