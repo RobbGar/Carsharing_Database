@@ -1,3 +1,5 @@
+set search_path to 'carsharing';
+
 --0 Coerenza durata abbonamenti
 CREATE OR REPLACE FUNCTION controllo_fine_abbonamento() RETURNS trigger AS $controllo_fine_abbonamento$ BEGIN
 IF (SELECT durata from abbonamenti Where coda = new.coda and new.dataf is not null) <>  make_interval (days => (new.dataf - new.datai))
@@ -11,9 +13,9 @@ CREATE TRIGGER controllo_fine_abbonamento BEFORE INSERT OR UPDATE ON storicoabbo
 
 
 --Funzione che ritorna quanti abbonamenti validi ha un utente
-CREATE FUNCTION valabb ( IN cod Integer )
+CREATE OR REPLACE FUNCTION valabb ( IN cod Integer )
 RETURNS Integer   
-AS $$  DECLARE var integer;  BEGIN  SELECT INTO var count(*) FROM storicoabbonamenti WHERE dataf Is null and codu=cod; RETURN var; END; $$  LANGUAGE plpgsql ;
+AS $$  DECLARE var integer;  BEGIN  SELECT INTO var count(*) FROM storicoabbonamenti WHERE current_date BETWEEN datai and dataf and codu=cod; RETURN var; END; $$  LANGUAGE plpgsql ;
 
 
 ALTER TABLE storicoabbonamenti ADD CONSTRAINT val CHECK (1>= valabb(codu));
@@ -21,7 +23,7 @@ ALTER TABLE storicoabbonamenti ADD CONSTRAINT val CHECK (1>= valabb(codu));
 
 --2 Una prenotazione può essere effettuata solo da un utente con un abbonamento valido.
 
-ALTER TABLE prenotazioni ADD CONSTRAINT abbonamentovalido CHECK (1 = valabb(utente));
+ALTER TABLE prenotazioni ADD CONSTRAINT abbonamentovalido CHECK (1 = valabb(codu));
 
 --3 La data di ritiro della vettura deve essere successiva o contemporanea alla data di inizio dell'abbonamento.
 
@@ -214,4 +216,3 @@ IF d > new.datasdoc OR d > new.datardoc
 THEN RAISE EXCEPTION '%Le date di scadenza e rilascio dei documenti devono essere temporalmente corrette ', new.datasdoc;
 ELSE RETURN NEW;
 END IF; END; $controllo_documenti$ LANGUAGE plpgsql;
-

@@ -90,13 +90,13 @@ insert into abbonamenti values (5, INTERVAL '180 days', 220);
 
 --Storico Abbonamenti
 
-insert into storicoabbonamenti values (1, '07-10-2019', '14-10-2019', 1, '01-04-2019', 'CC' );
-insert into storicoabbonamenti values (2, '18-06-2019', '25-06-2019', 1, '17-06-2019', 'CC' );
-insert into storicoabbonamenti values (3, '01-02-2020', NULL, 4, '20-02-2019', 'CC' );
-insert into storicoabbonamenti values (3, '01-01-2020', '08-01-2020', 1, '01-01-2020', 'CC');
-insert into storicoabbonamenti values (7, '04-11-2019', NULL, 5, '01-11-2019', 'CC' );
-insert into storicoabbonamenti values (8, '01-12-2019', NULL, 5, '08-12-2019', 'CC' );
-insert into storicoabbonamenti values (9, '04-06-2019', '18-06-2019', 3, '10-10-2020', 'CC' );
+INSERT INTO storicoabbonamenti (codu, datai, dataf, coda, datapagamento, tipopagamento) VALUES (1, '2019-10-07', '2019-10-14', 1, '2019-04-01', 'CC');
+INSERT INTO storicoabbonamenti (codu, datai, dataf, coda, datapagamento, tipopagamento) VALUES (2, '2019-06-18', '2019-06-25', 1, '2019-06-17', 'CC');
+INSERT INTO storicoabbonamenti (codu, datai, dataf, coda, datapagamento, tipopagamento) VALUES (3, '2019-02-01', '2019-04-02', 4, '2019-02-20', 'CC');
+INSERT INTO storicoabbonamenti (codu, datai, dataf, coda, datapagamento, tipopagamento) VALUES (3, '2019-01-01', '2019-01-08', 1, '2020-01-01', 'CC');
+INSERT INTO storicoabbonamenti (codu, datai, dataf, coda, datapagamento, tipopagamento) VALUES (7, '2019-11-04', '2020-05-02', 5, '2019-11-01', 'CC');
+INSERT INTO storicoabbonamenti (codu, datai, dataf, coda, datapagamento, tipopagamento) VALUES (8, '2019-12-01', '2020-05-29', 5, '2019-12-08', 'CC');
+INSERT INTO storicoabbonamenti (codu, datai, dataf, coda, datapagamento, tipopagamento) VALUES (9, '2019-06-04', '2019-06-18', 3, '2020-10-10', 'CC');
 
 --Modelli
 
@@ -172,6 +172,6 @@ INSERT INTO conducenti (codf, estremidoc, estremipat, catpat, utente, azienda, i
 
 --Prenotazioni
 
-
-insert into prenotazioni values (1, 3, '2020-02-06 08:00:00','2020-02-09 08:00:00',0,null, null, null, 'AB123AB', '2019-10-08 00:00:00',null, null, 'CC', null)
-insert into prenotazioni values (2, 7, '2019-12-06 08:00:00','2020-12-12 08:00:00',140,null, null, null, 'PP123PP', '2019-12-06 07:40:00',null, null, 'CC', null)
+insert into prenotazioni values (1, 7, '2020-02-06 08:00:00','2020-02-09 08:00:00',0,null, null, null, 'AB123AB', '2019-10-08 00:00:00',null, null, 'CC', null);
+insert into prenotazioni values (2, 7, '2019-12-06 08:00:00','2020-12-12 08:00:00',140,null, null, null, 'PP123PP', '2019-12-06 07:40:00',null, null, 'CC', null);
+insert into prenotazioni values(3, 8, '2019-12-03 12:00:00', '2019-12-16 12:00:00', 2000, 2500, '2019-12-03 12:00:01', '2019-12-16 11:00:00', 'FT121GB', '2019-12-02 07:40:00',null,'2019-12-02 07:40:00', 'CC', null);
