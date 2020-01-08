@@ -256,6 +256,7 @@ create table prenotazioni
 		constraint prenotazioni_utente_fkey
 			references utente
 				on update cascade on delete no action,
+	codf varchar(16) references conducenti on update cascade on delete no action not null,
 	dataoraritiro timestamp not null,
 	dataoraric timestamp not null,
 	kmritiro numeric(8,2),

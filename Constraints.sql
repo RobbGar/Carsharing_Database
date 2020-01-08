@@ -66,7 +66,7 @@ ALTER TABLE modalitapagamento ADD CONSTRAINT Controllo_prepagamento CHECK (prepa
 
 
 CREATE OR REPLACE FUNCTION controllo_carta() RETURNS trigger AS $controllo_carta$ BEGIN
-IF ((SELECT datas FROM CC INNER JOIN modalitapagamento on codCC = CC INNER JOIN utente on codu=new.codu and utente.codmp = modalitapagamento.codmp WHERE new.tipopagamento= 'CC')<new.datapagamento)
+IF ((SELECT datas FROM CC INNER JOIN modalitapagamento on CC = CC INNER JOIN utente on codu=new.codu and utente.codmp = modalitapagamento.codmp WHERE new.tipopagamento= 'CC')<new.datapagamento)
 THEN RAISE EXCEPTION '%carta scaduta', NEW.codu;
 ELSE RETURN NEW;
 END IF; END; $controllo_carta$ LANGUAGE plpgsql;
