@@ -47,11 +47,40 @@ Create view Fatturazione as
 		    select max(numposti)
             from parcheggi);
 
-		--c. 
+		--c. Selezionare gli utenti con più di 25 anni che hanno prenotato nell'ultimo mese
+		
+		select c.codf, nome, cognome
+		from prenotazioni inner join privato c on prenotazioni.codu = c.codu
+		where (current_timestamp - oraprenotazione) < make_interval(days := 30) and age(datan) >= make_interval(25)
+	
+--2. Operazioni di manipolazione
+		
+	--Porzione comune
+		
+		--a.Sconto natalizio del 10% sugli abbonamenti
+			UPDATE abbonamenti SET costo = costo * 0.9
+			
+		--b. cancellazione dei modelli senza vetture disponibili
+			DELETE from modelli where codm not in (select modello from veicoli);
+		
+		--c. inserimento 
+		
+	--Porzione a scelta
+		
+		--a. dimezza il pre-pag a chi non ha più un abbonamento valido. per pura cattiveria
+			update modalitapagamento set prepag = prepag / 2 where codmp in (select codmp from utente where valabb(codu)=0);
+			
+		
+		--b. cancellazione dei conducenti che non hanno guidato nell'ultimo anno
+			delete from conducenti where codf not in (select codf from prenotazioni where oraprenotazione-current_timestamp < make_interval(years := 1));	
+			
+		--c. inserimento 
+		
 		
 --3 Query complesse
 
 	--Porzione a scelta
+	
 		--a. selezionare il privato con l'età minore che non ha effettuato prenotazioni
 		select codf
 		from privato

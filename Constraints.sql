@@ -143,14 +143,16 @@ ALTER TABLE prenotazioni ADD CONSTRAINT km_validi_prenot CHECK (kmritiro<kmricon
 
 CREATE OR REPLACE FUNCTION calcolo_prezzo (codp integer, utente integer, kmritiro numeric,kmriconsegna numeric, oraeffettivaritiro timestamp, oraeffettivaric timestamp, veicolo char(7))
 RETURNS numeric
-AS $calcolo_prezzo$ DECLARE 	tar1 numeric (5,2); --tar1: tariffa kilometrica 
-		tar2 numeric(6,2); --tar2: tariffe temporali
-		prezzokm numeric(5,2); --salveremo il prezzo dei soli km in questa variabile
+AS $calcolo_prezzo$ 
+DECLARE 	
+		tar1 numeric (8,2); --tar1: tariffa kilometrica
+		tar2 numeric(8,2); --tar2: tariffe temporali
+		prezzokm numeric(8,2); --salveremo il prezzo dei soli km in questa variabile
 BEGIN
 	SELECT INTO tar1 kilmetrica FROM tariffe WHERE codm=(SELECT modello from veicoli where veicolo=targa);
 	prezzokm=tar1*(kmriconsegna-kmritiro); --tar1=tariffa kilometrica
-	IF (SELECT bonus FROM privato WHERE codu=utente AND DATE_PART('day', oraeffettivaric-oraeffettivaritiro)<7) 
-		THEN	RETURN prezzokm; --tariffa rottamazione: solo kilometri		
+	IF (SELECT bonus FROM privato WHERE codu=utente AND DATE_PART('day', oraeffettivaric-oraeffettivaritiro)<7)
+		THEN	RETURN prezzokm; --tariffa rottamazione: solo kilometri
 	ELSIF(DATE_PART('day', oraeffettivaric-oraeffettivaritiro)=0) --tariffa oraria
 		THEN 	SELECT INTO tar2 oraria FROM tariffe WHERE codm=(SELECT modello from veicoli where veicolo=targa);
 			RETURN prezzokm+tar2*(DATE_PART('hour', oraeffettivaric-oraeffettivaritiro));
@@ -158,8 +160,7 @@ BEGIN
 		THEN 	SELECT INTO tar2 giornaliera FROM tariffe WHERE codm=(SELECT modello from veicoli where veicolo=targa);
 			RETURN prezzokm+tar2*(DATE_PART('day', oraeffettivaric-oraeffettivaritiro));
 	ELSE 	SELECT settimanale, giornaliera INTO tar1, tar2 FROM tariffe WHERE codm=(SELECT modello from veicoli where veicolo=targa); --tariffa settimanale
-		RETURN tar1+prezzokm+tar2*(DATE_PART('day', oraeffettivaric-oraeffettivaritiro)-7);
-
+		RETURN tar1+tar2*(DATE_PART('day', oraeffettivaric-oraeffettivaritiro)-7);
 		--tar1 usata come tariffa settimanale in questo caso per semplicità
 END IF;
 RETURN -1;

@@ -202,7 +202,7 @@ create table tariffe
 			primary key
 		constraint tariffe_codm_fkey
 			references modelli
-				on update cascade on delete no action,
+				on update cascade on delete cascade,
 	oraria numeric(4,2) not null,
 	kilmetrica numeric(5,2) not null,
 	settimanale numeric(6,2) not null,

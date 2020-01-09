@@ -97,6 +97,7 @@ INSERT INTO storicoabbonamenti (codu, datai, dataf, coda, datapagamento, tipopag
 INSERT INTO storicoabbonamenti (codu, datai, dataf, coda, datapagamento, tipopagamento) VALUES (7, '2019-11-04', '2020-05-02', 5, '2019-11-01', 'CC');
 INSERT INTO storicoabbonamenti (codu, datai, dataf, coda, datapagamento, tipopagamento) VALUES (8, '2019-12-01', '2020-05-29', 5, '2019-12-08', 'CC');
 INSERT INTO storicoabbonamenti (codu, datai, dataf, coda, datapagamento, tipopagamento) VALUES (9, '2019-06-04', '2019-06-18', 3, '2020-10-10', 'CC');
+INSERT INTO storicoabbonamenti (codu, datai, dataf, coda, datapagamento, tipopagamento) VALUES (6, '2019-12-27', '2020-06-24', 5, '2019-12-28', 'CC');
 
 --Modelli
 
@@ -175,4 +176,8 @@ INSERT INTO conducenti (codf, estremidoc, estremipat, catpat, utente, azienda, i
 insert into prenotazioni values (1, 7, '2020-02-06 08:00:00','2020-02-09 08:00:00',0,null, null, null, 'AB123AB', '2019-10-08 00:00:00',null, null, 'CC', null);
 insert into prenotazioni values (2, 7, '2019-12-06 08:00:00','2020-12-12 08:00:00',140,null, null, null, 'PP123PP', '2019-12-06 07:40:00',null, null, 'CC', null);
 insert into prenotazioni values(3, 8, '2019-12-03 12:00:00', '2019-12-16 12:00:00', 2000, 2500, '2019-12-03 12:00:01', '2019-12-16 11:00:00', 'FT121GB', '2019-12-02 07:40:00',null,'2019-12-02 07:40:00', 'CC', null);
-INSERT INTO cangy.prenotazioni (codp, codu, dataoraritiro, dataoraric, kmritiro, kmriconsegna, oraeffettivaritiro, oraeffettivaric, veicolo, oraprenotazione, dataoraannullamento, datapagamento, tipopagamento, prezzo) VALUES (4, 8, '2020-01-01 00:00:00.002000', '2020-01-07 17:01:58.000000', 1400.00, 1500.00, '2020-01-01 17:02:13.000000', '2020-01-07 18:02:36.000000', 'FT121GB', '2019-12-27 17:03:00.000000', null, '2019-12-27 18:03:24.000000', 'CC', null);
+INSERT INTO prenotazioni (codp, codu, dataoraritiro, dataoraric, kmritiro, kmriconsegna, oraeffettivaritiro, oraeffettivaric, veicolo, oraprenotazione, dataoraannullamento, datapagamento, tipopagamento, prezzo) VALUES (4, 8, '2020-01-01 00:00:00.002000', '2020-01-07 17:01:58.000000', 1400.00, 1500.00, '2020-01-01 17:02:13.000000', '2020-01-07 18:02:36.000000', 'FT121GB', '2019-12-27 17:03:00.000000', null, '2019-12-27 18:03:24.000000', 'CC', null);
+INSERT INTO prenotazioni (codp, codu, dataoraritiro, dataoraric, kmritiro, kmriconsegna, oraeffettivaritiro, oraeffettivaric, veicolo, oraprenotazione, dataoraannullamento, datapagamento, tipopagamento, prezzo, codf) VALUES (5, 6, '2020-01-01 09:21:51.000000', '2020-01-08 09:22:01.000000', 12000.00, 13000.00, '2020-01-01 10:22:27.000000', '2020-01-08 10:22:37.000000', 'PP234PP', '2019-12-30 09:23:07.000000', null, '2019-12-30 10:23:25.000000', 'CC', null, 'TSCMMA11B79B344M');
+
+
+
