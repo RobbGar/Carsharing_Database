@@ -67,7 +67,7 @@ Create view Fatturazione as
 		
 	--Porzione a scelta
 		
-		--a. dimezza il pre-pag a chi non ha più un abbonamento valido. per pura cattiveria
+		--a. dimezza il pre-pag a chi non ha più un abbonamento valido. così. per pura cattiveria.
 			update modalitapagamento set prepag = prepag / 2 where codmp in (select codmp from utente where valabb(codu)=0);
 			
 		
@@ -77,8 +77,41 @@ Create view Fatturazione as
 		--c. inserimento 
 		
 		
---3 Query complesse
+--3 Query di analisi
+	
+	--Porzione comune
+		--a. determinare gli utenti che hanno utilizzato almeno una volta tutte le vetture in un determinato parcheggio
+		--usiamo le funzioni di gruppo per esprimere la divisione
+		Select codu
+		from prenotazioni inner join veicoli v on prenotazioni.veicolo = v.targa
+		where codp = 3
+		group by codu
+		having count(distinct (veicolo)) = (SELECT count(*)
+											FROM parcheggi inner join veicoli v2 on parcheggi.codp = v2.parcheggio
+											WHERE parcheggi.codp = 3
+											group by parcheggi.codp);
+									
+									
+		--b. determinare la categoria di veicolo noleggiati più volte negli ultimi 6 mesi
+		select cat
+		from prenotazioni inner join veicoli v1 on prenotazioni.veicolo = v1.targa inner join modelli m1 on v1.modello = m1.codm
+		where age(current_timestamp, oraprenotazione) < make_interval(months := 6)
+		group by cat
+		having count(*) = (
+			select max(bb)
+			from (select distinct m.cat, count(*) as bb
+				from prenotazioni
+						inner join veicoli v on prenotazioni.veicolo = v.targa
+                     inner join modelli m on v.modello = m.codm
+				where age(current_timestamp, oraprenotazione) < make_interval(months := 6)
+              group by m.cat
 
+            ) as cc)
+			
+		--c. determinare il numero di ore che sono state noleggiate le auto nel parcheggio 3
+
+	
+	
 	--Porzione a scelta
 	
 		--a. selezionare il privato con l'età minore che non ha effettuato prenotazioni
