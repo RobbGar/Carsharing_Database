@@ -108,8 +108,16 @@ Create view Fatturazione as
 
             ) as cc)
 			
-		--c. determinare il numero di ore che sono state noleggiate le auto nel parcheggio 3
+		--c. determinare il numero di ore che sono state noleggiate le auto nel parcheggio 1
 
+		select sum(bb) as temponoleggio
+		from (
+			select (oraeffettivaric-oraeffettivaritiro) as bb, targa
+			from prenotazioni inner join veicoli v on prenotazioni.veicolo = v.targa
+			where parcheggio = 1 and oraeffettivaric is not null
+			group by targa, (oraeffettivaric-oraeffettivaritiro)
+        )
+        as cc
 	
 	
 	--Porzione a scelta
@@ -125,5 +133,19 @@ Create view Fatturazione as
 			select p2.codf, ((current_date - datan)) as ages
 			from prenotazioni inner join privato p2 on prenotazioni.codu = p2.codu
 		)as tbb);
+		
+		--b. determinare l'azienda i cui dipendenti hanno noleggiato piu macchine
+		--funzione che ritorna il numero di dipendenti che hanno effettuato piu noleggi
+		create function maxdipendenti() returns integer
+		language plpgsql
+		as
+		$$
+			DECLARE var integer;  BEGIN  SELECT INTO var max(num) FROM (select count(*) as num from prenotazioni inner join aziende a on prenotazioni.codu = a.codu group by a.codu) as bb ; RETURN var; END;
+		$$;
+
+        select p.codu as cod, ragionesociale, count(*) as numerodipendenti
+        from aziende inner join prenotazioni p on aziende.codu = p.codu
+        group by p.codu, ragionesociale
+        having count(*) = maxdipendenti()
 	 
-	 
+		--c. 
