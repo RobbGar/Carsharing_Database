@@ -1,4 +1,5 @@
-
+create schema progettobd12;
+set search_path to 'progettobd12';
 create table cc
 (
     codCC serial not null primary key,

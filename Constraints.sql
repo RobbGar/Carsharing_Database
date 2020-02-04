@@ -1,4 +1,4 @@
-
+set search_path to 'progettobd12';
 --0 Coerenza durata abbonamenti
 CREATE OR REPLACE FUNCTION controllo_fine_abbonamento() RETURNS trigger AS $controllo_fine_abbonamento$ BEGIN
 IF (SELECT durata from abbonamenti Where coda = new.coda and new.dataf is not null) <>  make_interval (days => (new.dataf - new.datai))
@@ -187,7 +187,6 @@ FOR EACH ROW EXECUTE PROCEDURE
 	calcolo_prezzo_trigg();
 
 
-CREATE TRIGGER number28 AFTER INSERT ON Prenotazioni FOR EACH ROW EXECUTE PROCEDURE number28();
 --29 Per gli utenti che scelgono come modalità di pagamento la carta di credito, la data di scadenza deve essere successiva alla data del pagamento dell'abbonamento.
 --gia fatto
 --30 Per gli utenti che scelgono come modalità di pagamento la carta di credito, la data di scadenza deve essere successiva alla data del pagamento della prenotazione. 

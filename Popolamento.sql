@@ -1,3 +1,5 @@
+set search_path to 'progettobd12';
+
 --Popolamento Carte di credito
 insert into cc values (1, '4023345666755643', '01-01-2020', 'Paolo Rossi', 'VISA');
 insert into cc values (2, '4023345222355643', '01-05-2019', 'Mario Rossi', 'VISA');

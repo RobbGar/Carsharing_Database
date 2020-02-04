@@ -1,3 +1,5 @@
+set search_path to 'progettobd12';
+
 --0 Vista Fatturazione
 -- Funzioni per la vista fatturazione
 
@@ -10,7 +12,7 @@ DECLARE
 		tar2 numeric(8,2); --tar2: tariffe temporali
 BEGIN
 
-	SELECT settimanale, giornaliera INTO tar1, tar2 FROM hopefullythelastone.tariffe WHERE codm=(SELECT modello from hopefullythelastone.veicoli where veicolo=targa); --tariffa settimanale
+	SELECT settimanale, giornaliera INTO tar1, tar2 FROM progettobd12.tariffe WHERE codm=(SELECT modello from progettobd12.veicoli where veicolo=targa); --tariffa settimanale
 		RETURN tar1+tar2*(DATE_PART('day', oraeffettivaric-oraeffettivaritiro)-7);
 END;
 $$;
@@ -22,7 +24,7 @@ $$
 DECLARE
         tar1 numeric (8,2); --tar1: tariffa kilometrica
 BEGIN
-	SELECT INTO tar1 kilmetrica FROM hopefullythelastone.tariffe WHERE codm=(SELECT modello from hopefullythelastone.veicoli where veicolo=targa);
+	SELECT INTO tar1 kilmetrica FROM progettobd12.tariffe WHERE codm=(SELECT modello from progettobd12.veicoli where veicolo=targa);
 	return tar1*(kmriconsegna-kmritiro); --tar1=tariffa kilometrica
 	
 END;
@@ -37,11 +39,11 @@ DECLARE
 		prezzokm numeric(8,2); --salveremo il prezzo dei soli km in questa variabile
 BEGIN
 
-	prezzokm = hopefullythelastone.calcolo_tariffa_kilometrica(kmritiro, kmriconsegna, veicolo);
-	IF (SELECT bonus FROM privato WHERE codu=utente AND DATE_PART('day', oraeffettivaric-oraeffettivaritiro)<7)
+	prezzokm = progettobd12.calcolo_tariffa_kilometrica(kmritiro, kmriconsegna, veicolo);
+	IF (SELECT bonus FROM progettobd12.privato WHERE codu=utente AND DATE_PART('day', oraeffettivaric-oraeffettivaritiro)<7)
 		THEN	RETURN prezzokm; --tariffa bonus: solo kilometri
 	ELSE
-	    SELECT INTO tar2 oraria FROM hopefullythelastone.tariffe WHERE codm=(SELECT veicoli.modello from hopefullythelastone.veicoli where veicolo=targa);
+	    SELECT INTO tar2 oraria FROM progettobd12.tariffe WHERE codm=(SELECT veicoli.modello from progettobd12.veicoli where veicolo=targa);
 			RETURN prezzokm+tar2*(DATE_PART('hour', oraeffettivaric-oraeffettivaritiro));
 
 END IF;
@@ -56,28 +58,28 @@ DECLARE
 		tar2 numeric(8,2); --tar2: tariffe temporali
 		prezzokm numeric(8,2); --salveremo il prezzo dei soli km in questa variabile
 BEGIN
-	prezzokm=hopefullythelastone.calcolo_tariffa_kilometrica(kmritiro, kmriconsegna, veicolo);
-	SELECT INTO tar2 giornaliera FROM hopefullythelastone.tariffe WHERE codm=(SELECT modello from hopefullythelastone.veicoli where veicolo=targa);
+	prezzokm=progettobd12.calcolo_tariffa_kilometrica(kmritiro, kmriconsegna, veicolo);
+	SELECT INTO tar2 giornaliera FROM progettobd12.tariffe WHERE codm=(SELECT modello from progettobd12.veicoli where veicolo=targa);
 	RETURN prezzokm+tar2*(DATE_PART('day', oraeffettivaric-oraeffettivaritiro));
 END;
 $$;
 
 
-reate view fatturazione(codp, tariffakilometrica, tariffaoraria, tariffagiornaliera, tariffasettimanale,
+create view fatturazione(codp, tariffakilometrica, tariffaoraria, tariffagiornaliera, tariffasettimanale,
                          prezzototale) as
 SELECT prenotazioni.codp,
-       hopefullythelastone.calcolo_tariffa_kilometrica(prenotazioni.kmritiro, prenotazioni.kmriconsegna,
+       progettobd12.calcolo_tariffa_kilometrica(prenotazioni.kmritiro, prenotazioni.kmriconsegna,
                                          (prenotazioni.veicolo)::bpchar) AS tariffakilometrica,
-       hopefullythelastone.calcolo_tariffa_oraria(prenotazioni.codu, prenotazioni.kmritiro, prenotazioni.kmriconsegna,
+       progettobd12.calcolo_tariffa_oraria(prenotazioni.codu, prenotazioni.kmritiro, prenotazioni.kmriconsegna,
                                     prenotazioni.oraeffettivaritiro, prenotazioni.oraeffettivaric,
                                     (prenotazioni.veicolo)::bpchar)      AS tariffaoraria,
-       hopefullythelastone.calcolo_tariffa_giornaliera(prenotazioni.kmritiro, prenotazioni.kmriconsegna,
+       progettobd12.calcolo_tariffa_giornaliera(prenotazioni.kmritiro, prenotazioni.kmriconsegna,
                                          prenotazioni.oraeffettivaritiro, prenotazioni.oraeffettivaric,
                                          (prenotazioni.veicolo)::bpchar) AS tariffagiornaliera,
-       hopefullythelastone.calcolo_tariffa_settimanale(prenotazioni.oraeffettivaritiro, prenotazioni.oraeffettivaric,
+       progettobd12.calcolo_tariffa_settimanale(prenotazioni.oraeffettivaritiro, prenotazioni.oraeffettivaric,
                                          (prenotazioni.veicolo)::bpchar) AS tariffasettimanale,
        prenotazioni.prezzo                                               AS prezzototale
-FROM hopefullythelastone.prenotazioni
+FROM progettobd12.prenotazioni
 WHERE (prenotazioni.oraeffettivaric IS NOT NULL);
 
 
@@ -129,14 +131,14 @@ WHERE (prenotazioni.oraeffettivaric IS NOT NULL);
 		
 		select c.codf, nome, cognome
 		from prenotazioni inner join privato c on prenotazioni.codu = c.codu
-		where (current_timestamp - oraprenotazione) < make_interval(days := 30) and age(datan) >= make_interval(25)
+		where (current_timestamp - oraprenotazione) < make_interval(days := 30) and age(datan) >= make_interval(25);
 	
 --2. Operazioni di manipolazione
 		
 	--Porzione comune
 		
 		--a.Sconto natalizio del 10% sugli abbonamenti
-			UPDATE abbonamenti SET costo = costo * 0.9
+			UPDATE abbonamenti SET costo = costo * 0.9;
 			
 		--b. cancellazione dei modelli senza vetture disponibili
 			DELETE from modelli where codm not in (select modello from veicoli);
@@ -184,7 +186,7 @@ WHERE (prenotazioni.oraeffettivaric IS NOT NULL);
 				where age(current_timestamp, oraprenotazione) < make_interval(months := 6)
               group by m.cat
 
-            ) as cc)
+            ) as cc);
 			
 		--c. determinare il numero di ore che sono state noleggiate le auto nel parcheggio 1
 
@@ -195,7 +197,7 @@ WHERE (prenotazioni.oraeffettivaric IS NOT NULL);
 			where parcheggio = 1 and oraeffettivaric is not null
 			group by targa, (oraeffettivaric-oraeffettivaritiro)
         )
-        as cc
+        as cc;
 	
 	
 	--Porzione a scelta
@@ -224,6 +226,14 @@ WHERE (prenotazioni.oraeffettivaric IS NOT NULL);
         select p.codu as cod, ragionesociale, count(*) as numerodipendenti
         from aziende inner join prenotazioni p on aziende.codu = p.codu
         group by p.codu, ragionesociale
-        having count(*) = maxdipendenti()
+        having count(*) = maxdipendenti();
 	 
-		--c. determinare il numero di c
+		--c. determinare i conducenti che hanno guidato più veicoli (distinti) della media
+		
+		select codu, count(distinct (veicolo))
+		from prenotazioni inner join conducenti c on prenotazioni.codf = c.codf inner join veicoli v on prenotazioni.veicolo = v.targa
+        group by codu
+        having count(distinct (veicolo)) > (select avg(num)
+                                            from(select count(distinct veicolo) as num
+                                                from prenotazioni inner join veicoli v2 on prenotazioni.veicolo = v2.targa
+                                                group by codu) as b);
