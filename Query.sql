@@ -1,7 +1,85 @@
 --0 Vista Fatturazione
+-- Funzioni per la vista fatturazione
 
-Create view Fatturazione as
-    select codp, prezzo from prenotazioni where oraeffettivaric is not null;
+create or replace function calcolo_tariffa_settimanale(oraeffettivaritiro timestamp without time zone, oraeffettivaric timestamp without time zone, veicolo character) returns numeric
+    language plpgsql
+as
+$$
+DECLARE
+        tar1 numeric (8,2); --tar1: tariffa kilometrica
+		tar2 numeric(8,2); --tar2: tariffe temporali
+BEGIN
+
+	SELECT settimanale, giornaliera INTO tar1, tar2 FROM hopefullythelastone.tariffe WHERE codm=(SELECT modello from hopefullythelastone.veicoli where veicolo=targa); --tariffa settimanale
+		RETURN tar1+tar2*(DATE_PART('day', oraeffettivaric-oraeffettivaritiro)-7);
+END;
+$$;
+
+create or replace function calcolo_tariffa_kilometrica(kmritiro numeric, kmriconsegna numeric, veicolo character) returns numeric
+    language plpgsql
+as
+$$
+DECLARE
+        tar1 numeric (8,2); --tar1: tariffa kilometrica
+BEGIN
+	SELECT INTO tar1 kilmetrica FROM hopefullythelastone.tariffe WHERE codm=(SELECT modello from hopefullythelastone.veicoli where veicolo=targa);
+	return tar1*(kmriconsegna-kmritiro); --tar1=tariffa kilometrica
+	
+END;
+$$;
+
+create or replace function calcolo_tariffa_oraria(utente integer, kmritiro numeric, kmriconsegna numeric, oraeffettivaritiro timestamp without time zone, oraeffettivaric timestamp without time zone, veicolo character) returns numeric
+    language plpgsql
+as
+$$
+DECLARE
+		tar2 numeric(8,2); --tar2: tariffe temporali
+		prezzokm numeric(8,2); --salveremo il prezzo dei soli km in questa variabile
+BEGIN
+
+	prezzokm = hopefullythelastone.calcolo_tariffa_kilometrica(kmritiro, kmriconsegna, veicolo);
+	IF (SELECT bonus FROM privato WHERE codu=utente AND DATE_PART('day', oraeffettivaric-oraeffettivaritiro)<7)
+		THEN	RETURN prezzokm; --tariffa bonus: solo kilometri
+	ELSE
+	    SELECT INTO tar2 oraria FROM hopefullythelastone.tariffe WHERE codm=(SELECT veicoli.modello from hopefullythelastone.veicoli where veicolo=targa);
+			RETURN prezzokm+tar2*(DATE_PART('hour', oraeffettivaric-oraeffettivaritiro));
+
+END IF;
+END;
+$$;
+
+create or replace function calcolo_tariffa_giornaliera(kmritiro numeric, kmriconsegna numeric, oraeffettivaritiro timestamp without time zone, oraeffettivaric timestamp without time zone, veicolo character) returns numeric
+    language plpgsql
+as
+$$
+DECLARE
+		tar2 numeric(8,2); --tar2: tariffe temporali
+		prezzokm numeric(8,2); --salveremo il prezzo dei soli km in questa variabile
+BEGIN
+	prezzokm=hopefullythelastone.calcolo_tariffa_kilometrica(kmritiro, kmriconsegna, veicolo);
+	SELECT INTO tar2 giornaliera FROM hopefullythelastone.tariffe WHERE codm=(SELECT modello from hopefullythelastone.veicoli where veicolo=targa);
+	RETURN prezzokm+tar2*(DATE_PART('day', oraeffettivaric-oraeffettivaritiro));
+END;
+$$;
+
+
+reate view fatturazione(codp, tariffakilometrica, tariffaoraria, tariffagiornaliera, tariffasettimanale,
+                         prezzototale) as
+SELECT prenotazioni.codp,
+       hopefullythelastone.calcolo_tariffa_kilometrica(prenotazioni.kmritiro, prenotazioni.kmriconsegna,
+                                         (prenotazioni.veicolo)::bpchar) AS tariffakilometrica,
+       hopefullythelastone.calcolo_tariffa_oraria(prenotazioni.codu, prenotazioni.kmritiro, prenotazioni.kmriconsegna,
+                                    prenotazioni.oraeffettivaritiro, prenotazioni.oraeffettivaric,
+                                    (prenotazioni.veicolo)::bpchar)      AS tariffaoraria,
+       hopefullythelastone.calcolo_tariffa_giornaliera(prenotazioni.kmritiro, prenotazioni.kmriconsegna,
+                                         prenotazioni.oraeffettivaritiro, prenotazioni.oraeffettivaric,
+                                         (prenotazioni.veicolo)::bpchar) AS tariffagiornaliera,
+       hopefullythelastone.calcolo_tariffa_settimanale(prenotazioni.oraeffettivaritiro, prenotazioni.oraeffettivaric,
+                                         (prenotazioni.veicolo)::bpchar) AS tariffasettimanale,
+       prenotazioni.prezzo                                               AS prezzototale
+FROM hopefullythelastone.prenotazioni
+WHERE (prenotazioni.oraeffettivaric IS NOT NULL);
+
 
 --1 Alcune (almeno tre) interrogazioni semplici (= di gestione) per ogni porzione coperta (comune, a scelta)
 
@@ -148,4 +226,4 @@ Create view Fatturazione as
         group by p.codu, ragionesociale
         having count(*) = maxdipendenti()
 	 
-		--c. 
+		--c. determinare il numero di c

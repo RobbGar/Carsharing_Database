@@ -1,4 +1,3 @@
-set search_path to 'carsharing';
 
 --0 Coerenza durata abbonamenti
 CREATE OR REPLACE FUNCTION controllo_fine_abbonamento() RETURNS trigger AS $controllo_fine_abbonamento$ BEGIN
@@ -66,7 +65,7 @@ ALTER TABLE modalitapagamento ADD CONSTRAINT Controllo_prepagamento CHECK (prepa
 
 
 CREATE OR REPLACE FUNCTION controllo_carta() RETURNS trigger AS $controllo_carta$ BEGIN
-IF ((SELECT datas FROM CC INNER JOIN modalitapagamento on CC = CC INNER JOIN utente on codu=new.codu and utente.codmp = modalitapagamento.codmp WHERE new.tipopagamento= 'CC')<new.datapagamento)
+IF ((SELECT datas FROM CC INNER JOIN modalitapagamento on CC.codcc = modalitapagamento.CC INNER JOIN utente on codu=new.codu and utente.codmp = modalitapagamento.codmp WHERE new.tipopagamento= 'CC')<new.datapagamento)
 THEN RAISE EXCEPTION '%carta scaduta', NEW.codu;
 ELSE RETURN NEW;
 END IF; END; $controllo_carta$ LANGUAGE plpgsql;
@@ -186,20 +185,7 @@ BEFORE INSERT OR UPDATE ON prenotazioni
 FOR EACH ROW EXECUTE PROCEDURE 
 
 	calcolo_prezzo_trigg();
---28 Se un utente privato ha meno di 26 anni, il prezzo viene ridotto della percentuale prevista.
 
-CREATE FUNCTION number28()
-RETURNS trigger
-AS $number28$
-BEGIN
-
-		UPDATE Prenotazioni SET prezzo=prezzo/1.25
-	WHERE prenotazioni.codu=NEW.codu AND NEW.codu IN (SELECT CodU FROM Utente Natural JOIN Privato  WHERE make_interval(years := (CURRENT_DATE-DataN))< INTERVAL'26' YEAR);
-	RETURN NEW;
-
-
-END;
-$number28$ LANGUAGE plpgsql;
 
 CREATE TRIGGER number28 AFTER INSERT ON Prenotazioni FOR EACH ROW EXECUTE PROCEDURE number28();
 --29 Per gli utenti che scelgono come modalità di pagamento la carta di credito, la data di scadenza deve essere successiva alla data del pagamento dell'abbonamento.
